@@ -1,24 +1,31 @@
 const config = require('./config.json');
-const mongoose = require('mongoose');
+const mongoose = require('./database/mongoose');
 const environment = config.production == false ? require('./environments/development.json') : require('./environments/production.json');
 const express = require('express');
+const bodyParser = require('body-parser');
 const database = mongoose.connection;
+const app = express();
+
+// Load in the mongoose models
+const { Post, Vehicle, Battery, Path } = require('./database/models');
+
+//Load middleware 
+app.use(bodyParser.json());
+
+// CROS Headers Middleware
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); 
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
 //Importing Routes
 const postsRoute = require('./routes/posts');
+const vehiclesRoute = require('./routes/vehicles');
+const pathsRoute = require('./routes/paths');
+const batteriesRoute = require('./routes/batteries');
+const clustersRoute = require('./routes/clusters');
 
-const app = express();
-
- mongoose.connect(environment.database.link, 
-    { useNewUrlParser: true },
-    () => console.log('connected to DB!')
- );
-
-// Checking database connection
-if(!database)
- console.log("Error connecting db")
-else
- console.log("Db connected successfully")
 
 app.get('/', function(_, res) {
 	res.status(200);
@@ -26,6 +33,11 @@ app.get('/', function(_, res) {
 });
 
 app.use('/posts', postsRoute);
+app.use('/vehicles', vehiclesRoute);
+app.use('/paths', pathsRoute);
+app.use('/batteries', batteriesRoute);
+app.use('/clusters', clustersRoute);
+
 
 app.use('*', function(_, res) {
 	res.status(404);
@@ -33,4 +45,4 @@ app.use('*', function(_, res) {
 });
 
 
-app.listen(environment.port, () => console.log("Fleet server listening on port: " + environment.port));
+app.listen(environment.port, () => console.log("Fleet Server is listening on port " + environment.port));

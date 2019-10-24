@@ -1,5 +1,7 @@
 {
 	"port": 8080,
+	"url": "http://localhost",
+	"website": "http://localhost:4200",
 	"database": {
 		"name": "Fleet",
 		"link": "mongodb://localhost/fleet"
