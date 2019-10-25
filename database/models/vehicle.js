@@ -17,11 +17,11 @@ const VehicleModelSchema = new Schema({
         max: 180,
     },
     model: {type: String,
-        enum: ['Tesla Model 3', 'MG ZS EV', 'Mercedes-Benz EQC', 'Nissan Leaf', 'Tesla Model X', 'Hyundai Kona Electric', 'Hyundai Ionic Electric'],
         required: true 
     },
     cluster: {type: Schema.Types.ObjectId,
         ref: 'Cluster',
+        required: true
     },
     _battery_id: {type: Schema.Types.ObjectId,
         ref: 'Battery',

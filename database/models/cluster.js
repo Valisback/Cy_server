@@ -7,13 +7,13 @@ var ClusterModelSchema = new Schema({
         required: true
     },
     center_lng: {type: Number,
-        min:-150,
-        max: 150,
+        min:-180,
+        max: 180,
         required: true 
     },
     center_lat: {type: Number,
-        min:-150,
-        max: 150,
+        min:-180,
+        max: 180,
         required: true
     },
     radius: {type: Number,
