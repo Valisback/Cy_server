@@ -4,11 +4,13 @@ const { Battery } = require('./battery');
 const { Vehicle } = require('./vehicle');
 const { Path } = require('./path');
 const { Cluster } = require('./cluster');
+const { Parameter } = require('./parameter');
 
 module.exports = {
     Post,
     Battery,
     Vehicle,
     Path,
-    Cluster
+    Cluster,
+    Parameter
 };

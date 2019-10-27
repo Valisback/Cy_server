@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const { Battery } = require('./battery');
 const { Path } = require('./path');
 const { Cluster } = require('./cluster');
+const { Parameter  } = require('./parameter');
+
 
 const moment = require('moment');
 
@@ -23,6 +25,9 @@ const VehicleModelSchema = new Schema({
         ref: 'Cluster',
         required: true
     },
+    parameters: [{type: Schema.Types.ObjectId,
+        ref: 'Parameter',
+    }],
     _battery_id: {type: Schema.Types.ObjectId,
         ref: 'Battery',
     },
