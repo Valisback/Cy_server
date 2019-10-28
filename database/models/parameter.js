@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
+const { Vehicle } = require('./vehicle');
 
 var Schema = mongoose.Schema;
 
 var ParameterModelSchema = new Schema({
+    vehicle: {type: Schema.Types.ObjectId,
+        ref: 'Vehicle',
+        required: true
+    },
     time: {type: Date,
 
         required: true 

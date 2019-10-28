@@ -25,6 +25,7 @@ const vehiclesRoute = require('./routes/vehicles');
 const pathsRoute = require('./routes/paths');
 const batteriesRoute = require('./routes/batteries');
 const clustersRoute = require('./routes/clusters');
+const parametersRoute = require('./routes/parameters');
 
 
 app.get('/', function(_, res) {
@@ -37,6 +38,7 @@ app.use('/vehicles', vehiclesRoute);
 app.use('/paths', pathsRoute);
 app.use('/batteries', batteriesRoute);
 app.use('/clusters', clustersRoute);
+app.use('/parameters', parametersRoute);
 
 
 app.use('*', function(_, res) {

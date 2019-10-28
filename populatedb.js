@@ -115,6 +115,7 @@ function batteryCreate(name, charge, life_span, status, date_of_creation, cb) {
 }
 
 function vehicleCreate(
+    id,
   position_lat,
   position_lng,
   model,
@@ -126,6 +127,7 @@ function vehicleCreate(
   cb
 ) {
   vehicledetail = {
+    _id: id,
     position_lat: position_lat,
     position_lng: position_lng,
     model: model,
@@ -171,7 +173,7 @@ function createPaths(cb) {
   );
 }
 
-async function createParams(random_vehicle_index, cb) {
+async function createParams(random_vehicle_index, vehicle_id, cb) {
   price_list = [38990, 29900, 64535, 31990, 84990, 36950, 30315];
   random_vehicle_index = Math.floor(random_vehicle_index);
   let now = new Date();
@@ -190,6 +192,7 @@ async function createParams(random_vehicle_index, cb) {
     }
     cost_value = cost_value - cost_value * (0.2 / 365) * (Math.random() + 0.5);
     parameterDetail = {
+     vehicle: vehicle_id,
       time: date,
       performance: performance,
       battery_charge: battery_charge,
@@ -333,8 +336,8 @@ async function genVehicleParams() {
   let chosen_model = vehicle_list[random_vehicle_index];
   let cluster;
   let param_array = [];
-  
-  param_array = await createParams(random_vehicle_index);
+  let id = mongoose.Types.ObjectId(); //id of the vehicle
+  param_array = await createParams(random_vehicle_index, id);
   console.log("INSSEEEEERTED", param_array);
   
 
@@ -360,6 +363,7 @@ async function genVehicleParams() {
             }
           );
           vehicle_prop = {
+            id: id,
             lat: random_lat,
             lng: random_lng,
             model: chosen_model,
@@ -383,6 +387,7 @@ function createVehicles(cb) {
         for (let i = 0; i < NB_VEHICLE_GENERATED; i++) {
           vehicle_prop = await genVehicleParams();
           await vehicleCreate(
+            vehicle_prop.id,
             vehicle_prop.lat,
             vehicle_prop.lng,
             vehicle_prop.model,
