@@ -2,7 +2,7 @@
 const state_boundaries = require("./state_boundaries.json");
 
 //Total number of vehicle to be generated
-const NB_VEHICLE_GENERATED = 200;
+const NB_VEHICLE_GENERATED = 10;
 
 // Get arguments passed on command line
 var userArgs = process.argv.slice(2);
@@ -173,16 +173,15 @@ function createPaths(cb) {
   );
 }
 
-async function createParams(random_vehicle_index, vehicle_id, cb) {
+async function createParams(date_creation, random_vehicle_index, vehicle_id, cb) {
   price_list = [38990, 29900, 64535, 31990, 84990, 36950, 30315];
   random_vehicle_index = Math.floor(random_vehicle_index);
   let now = new Date();
   let performance = 100;
   let battery_charge = 100;
   let params = [];
-  date = new Date(2016, 0, 1);
   let cost_value = price_list[random_vehicle_index];
-  for (var d = new Date(2016, 0, 1); d <= now; d.setMonth(d.getMonth() + 1)) {
+  for (var d = new Date(date_creation); d <= now; d.setMonth(d.getMonth() + 1)) {
     date  = new Date(d);
     performance = performance - (Math.random() * performance) / 100;
     if (battery_charge < 8) {
@@ -335,9 +334,12 @@ async function genVehicleParams() {
   random_vehicle_index = Math.floor(random_vehicle_index);
   let chosen_model = vehicle_list[random_vehicle_index];
   let cluster;
+  const start = new Date(2016, 01, 01);
+  const end = new Date(2019, 09, 01);
+  const date_creation_vehicle = randomDate(start, end);
   let param_array = [];
   let id = mongoose.Types.ObjectId(); //id of the vehicle
-  param_array = await createParams(random_vehicle_index, id);
+  param_array = await createParams(date_creation_vehicle,random_vehicle_index, id);
   console.log("INSSEEEEERTED", param_array);
   
 
@@ -367,6 +369,7 @@ async function genVehicleParams() {
             lat: random_lat,
             lng: random_lng,
             model: chosen_model,
+            date_creation: date_creation_vehicle,
             cluster: thisCluster,
             parameters: param_array
           };
@@ -394,7 +397,7 @@ function createVehicles(cb) {
             vehicle_prop.cluster,
             vehicle_prop.parameters,
             batteries[0],
-            "2017,09,10",
+            vehicle_prop.date_creation,
             paths[0]
           );
         }
@@ -404,6 +407,12 @@ function createVehicles(cb) {
     cb
   );
 }
+
+function randomDate(start, end) {
+  var date = new Date(+start + Math.random() * (end - start));
+  return date;
+}
+
 function cleanDb(cb) {
   // Delete all items in current database
   async.parallel(

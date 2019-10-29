@@ -22,13 +22,29 @@ exports.vehicle_param = function(req, res, next) {
       });
 };
 
-exports.vehicle_parameters = function(req, res, next) {
-    Parameter.find({id: req.params.cluster})
-    .populate('_battery_id')
-    .populate('_path_id')
-    .exec(function (err, list_cluster_vehicle) {
+//Return parameters of the vehicle at a specific date
+exports.param_of_vehicle_and_date = function(req, res, next) {
+  var start = new Date(req.params.date);
+  start_year = start.getFullYear();
+  start_month = start.getMonth();
+  end_month = start_month + 1;
+  start = new Date(start_year, start_month);
+  var end = new Date(start_year, end_month);
+  console.log("start:", start, "end: ", end);
+    Parameter.find({$and:[{vehicle: req.params.vehicle_id},{time: {$gte: start, $lt: end}}]})
+    .exec(function (err, parameter_match) {
         if (err) { return next(err); }
         //Successful, so render
-        res.json({ title: 'Vehicle List', vehicle_list: list_cluster_vehicle });
+        res.json({ title: 'Parameters', parameters: parameter_match });
+      });
+};
+
+//Return parameters of the vehicle between 2 dates
+exports.param_of_vehicle_between_dates = function(req, res, next) {
+    Parameter.find({$and:[{vehicle: req.params.vehicle_id},{time: {"$gte": req.params.date1, "$lt": req.params.date2}}]})
+    .exec(function (err, parameter_match) {
+        if (err) { return next(err); }
+        //Successful, so render
+        res.json({ title: 'Parameters', parameters: parameter_match });
       });
 };
