@@ -176,7 +176,8 @@ function createPaths(cb) {
 async function createParams(date_creation, random_vehicle_index, vehicle_id, cb) {
   price_list = [38990, 29900, 64535, 31990, 84990, 36950, 30315];
   random_vehicle_index = Math.floor(random_vehicle_index);
-  let now = new Date();
+  let today = new Date();
+  let now = new Date(today.setMonth(today.getMonth()+1));
   let performance = 100;
   let battery_charge = 100;
   let params = [];
@@ -329,6 +330,7 @@ async function genVehicleParams() {
     "Hyundai Ionic Electric"
   ];
 
+
   // Generation of time-dependent data
   let random_vehicle_index = Math.random() * vehicle_list.length;
   random_vehicle_index = Math.floor(random_vehicle_index);
@@ -337,10 +339,12 @@ async function genVehicleParams() {
   const start = new Date(2016, 01, 01);
   const end = new Date(2019, 09, 01);
   const date_creation_vehicle = randomDate(start, end);
+
   let param_array = [];
   let id = mongoose.Types.ObjectId(); //id of the vehicle
+  
+
   param_array = await createParams(date_creation_vehicle,random_vehicle_index, id);
-  console.log("INSSEEEEERTED", param_array);
   
 
   // Generation of random coordinates and cluster position
@@ -357,6 +361,7 @@ async function genVehicleParams() {
           random_lng < state_boundaries[element].max_lng
         ) {
           cluster = state_boundaries[element].name;
+          let name = "FLE-"+ date_creation_vehicle.getTime() +"-"+ (random_lat*100).toPrecision(4);
           let vehicle_prop;
           thisCluster = await Cluster.findOne(
             { name: cluster },
@@ -368,7 +373,7 @@ async function genVehicleParams() {
             id: id,
             lat: random_lat,
             lng: random_lng,
-            model: chosen_model,
+            model: name,
             date_creation: date_creation_vehicle,
             cluster: thisCluster,
             parameters: param_array

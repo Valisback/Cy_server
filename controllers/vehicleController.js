@@ -3,6 +3,7 @@ const {Vehicle, Parameter} = require('../database/models');
 // Display list of all vehicles.
 exports.vehicle_list = function(req, res, next) {
     Vehicle.find({})
+    .populate('cluster')
     .populate('_battery_id')
     .populate('_path_id')
     .exec(function (err, list_vehicle) {
@@ -24,16 +25,19 @@ exports.vehicle_cluster_list = function(req, res, next) {
       });
 };
 
-exports.vehicle_parameters = function(req, res, next) {
-    Parameter.find({cluster: req.params.cluster})
+// Returns vehicle corresponding to specific model
+exports.vehicle_model = function(req, res, next) {
+    Vehicle.find({model: req.params.model})
     .populate('_battery_id')
     .populate('_path_id')
-    .exec(function (err, list_cluster_vehicle) {
+    .exec(function (err, matching_vehicle) {
         if (err) { return next(err); }
         //Successful, so render
-        res.json({ title: 'Vehicle List', vehicle_list: list_cluster_vehicle });
+        res.json({ title: 'Vehicle List', vehicle: matching_vehicle });
       });
 };
+
+
 // Display detail page for a specific vehicle.
 exports.vehicle_detail = function(req, res, next) {
     Vehicle.findById(req.params.id)

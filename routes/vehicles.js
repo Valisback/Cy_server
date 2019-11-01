@@ -37,4 +37,8 @@ router.get('/', vehicle_controller.vehicle_list);
 // GET request for list of all vehicle in a specific cluster.
 router.get('/cluster/:cluster', vehicle_controller.vehicle_cluster_list);
 
+// GET request for a specific vehicle model
+router.get('/model/:model', vehicle_controller.vehicle_model);
+
+
 module.exports = router;
