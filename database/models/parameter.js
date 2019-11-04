@@ -14,7 +14,7 @@ var ParameterModelSchema = new Schema({
     },
     performance: {type: Number,
         min: 0,
-        max: 100,
+        max: 120,
         required: true
     },
     battery_charge: {type: Number,

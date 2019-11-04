@@ -185,10 +185,14 @@ async function createParams(date_creation, random_vehicle_index, vehicle_id, cb)
   let performance = 100;
   let battery_charge = 100;
   let params = [];
+  let month = 0;
   let cost_value = price_list[random_vehicle_index];
   for (var d = new Date(date_creation); d <= now; d.setMonth(d.getMonth() + 1)) {
     date  = new Date(d);
-    performance = performance - (Math.random() * performance) / 100;
+    table = [-1, 1];
+    selector = Math.round(Math.random());
+    performance = -Math.pow(month / 12, 1.7 ) + 100 + table[selector] * month * (Math.random()*(0.2));
+    month ++;
     if (battery_charge < 8) {
       battery_charge = battery_charge + Math.random() * 90;
     } else {
@@ -309,28 +313,28 @@ function createBatteries(cb) {
         );
       },
       function(callback) {
-        batteryCreate("lead acid", 21, 68, "Working", "2016,04,06", callback);
+        batteryCreate("lead acid", 21, 29, "Working", "2016,04,06", callback);
       },
       function(callback) {
-        batteryCreate("lead acid", 47, 68, "Working", "2016,04,06", callback);
+        batteryCreate("lead acid", 47, 18, "Working", "2016,04,06", callback);
       },
       function(callback) {
-        batteryCreate("lead acid", 32, 68, "Working", "2016,04,06", callback);
+        batteryCreate("lead acid", 32, 58, "Working", "2016,04,06", callback);
       },
       function(callback) {
-        batteryCreate("lead acid", 78, 68, "Working", "2016,04,06", callback);
+        batteryCreate("lead acid", 78, 64, "Working", "2016,04,06", callback);
       },
       function(callback) {
-        batteryCreate("lead acid", 64, 68, "Working", "2016,04,06", callback);
+        batteryCreate("lead acid", 64, 78, "Working", "2016,04,06", callback);
       },
       function(callback) {
-        batteryCreate("lead acid", 58, 68, "Working", "2016,04,06", callback);
+        batteryCreate("lead acid", 58, 32, "Working", "2016,04,06", callback);
       },
       function(callback) {
-        batteryCreate("lead acid", 18, 68, "Working", "2016,04,06", callback);
+        batteryCreate("lead acid", 18, 47, "Working", "2016,04,06", callback);
       },
       function(callback) {
-        batteryCreate("lead acid", 68, 68, "Working", "2016,04,06", callback);
+        batteryCreate("lead acid", 68, 21, "Working", "2016,04,06", callback);
       },
       function(callback) {
         batteryCreate("lead acid", 29, 68, "Working", "2016,04,06", callback);
