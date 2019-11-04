@@ -16,6 +16,7 @@ exports.vehicle_list = function(req, res, next) {
 // List of vehicles for a specific cluster
 exports.vehicle_cluster_list = function(req, res, next) {
     Vehicle.find({cluster: req.params.cluster})
+    .populate('cluster')
     .populate('_battery_id')
     .populate('_path_id')
     .exec(function (err, list_cluster_vehicle) {
@@ -28,6 +29,7 @@ exports.vehicle_cluster_list = function(req, res, next) {
 // Returns vehicle corresponding to specific model
 exports.vehicle_model = function(req, res, next) {
     Vehicle.find({model: req.params.model})
+    .populate('cluster')
     .populate('_battery_id')
     .populate('_path_id')
     .exec(function (err, matching_vehicle) {
@@ -41,6 +43,9 @@ exports.vehicle_model = function(req, res, next) {
 // Display detail page for a specific vehicle.
 exports.vehicle_detail = function(req, res, next) {
     Vehicle.findById(req.params.id)
+    .populate('cluster')
+    .populate('_battery_id')
+    .populate('_path_id')
     .exec(function (err, vehicle) {
         if (err) { return next(err); }
         //Successful, so render

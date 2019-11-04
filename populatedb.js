@@ -2,7 +2,7 @@
 const state_boundaries = require("./state_boundaries.json");
 
 //Total number of vehicle to be generated
-const NB_VEHICLE_GENERATED = 10;
+let NB_VEHICLE_GENERATED = 10; //default value
 
 // Get arguments passed on command line
 var userArgs = process.argv.slice(2);
@@ -18,6 +18,8 @@ var {
 
 var mongoose = require("mongoose");
 var mongoDB = userArgs[0];
+NB_VEHICLE_GENERATED = userArgs[1];
+
 mongoose.connect(mongoDB, { useUnifiedTopology: true, useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
@@ -119,6 +121,7 @@ function vehicleCreate(
   position_lat,
   position_lng,
   model,
+  temperature,
   cluster,
   parameters,
   _battery_id,
@@ -131,6 +134,7 @@ function vehicleCreate(
     position_lat: position_lat,
     position_lng: position_lng,
     model: model,
+    temperature: temperature,
     cluster: cluster,
     parameters: parameters,
     _battery_id: _battery_id,
@@ -174,7 +178,7 @@ function createPaths(cb) {
 }
 
 async function createParams(date_creation, random_vehicle_index, vehicle_id, cb) {
-  price_list = [38990, 29900, 64535, 31990, 84990, 36950, 30315];
+  price_list = [8795, 8797, 8794, 8792, 8793, 8798, 8791];
   random_vehicle_index = Math.floor(random_vehicle_index);
   let today = new Date();
   let now = new Date(today.setMonth(today.getMonth()+1));
@@ -190,7 +194,8 @@ async function createParams(date_creation, random_vehicle_index, vehicle_id, cb)
     } else {
       battery_charge = Math.random() * battery_charge;
     }
-    cost_value = cost_value - cost_value * (0.2 / 365) * (Math.random() + 0.5);
+    cost_value = cost_value - cost_value * (0.4 / 365) * (performance/100);
+    cost_value = cost_value.toPrecision(5);
     parameterDetail = {
      vehicle: vehicle_id,
       time: date,
@@ -305,6 +310,30 @@ function createBatteries(cb) {
       },
       function(callback) {
         batteryCreate("lead acid", 21, 68, "Working", "2016,04,06", callback);
+      },
+      function(callback) {
+        batteryCreate("lead acid", 47, 68, "Working", "2016,04,06", callback);
+      },
+      function(callback) {
+        batteryCreate("lead acid", 32, 68, "Working", "2016,04,06", callback);
+      },
+      function(callback) {
+        batteryCreate("lead acid", 78, 68, "Working", "2016,04,06", callback);
+      },
+      function(callback) {
+        batteryCreate("lead acid", 64, 68, "Working", "2016,04,06", callback);
+      },
+      function(callback) {
+        batteryCreate("lead acid", 58, 68, "Working", "2016,04,06", callback);
+      },
+      function(callback) {
+        batteryCreate("lead acid", 18, 68, "Working", "2016,04,06", callback);
+      },
+      function(callback) {
+        batteryCreate("lead acid", 68, 68, "Working", "2016,04,06", callback);
+      },
+      function(callback) {
+        batteryCreate("lead acid", 29, 68, "Working", "2016,04,06", callback);
       }
     ],
     // optional callback
@@ -343,9 +372,9 @@ async function genVehicleParams() {
   let param_array = [];
   let id = mongoose.Types.ObjectId(); //id of the vehicle
   
-
   param_array = await createParams(date_creation_vehicle,random_vehicle_index, id);
   
+  const temperature = (Math.random()*(60)+32).toPrecision(2);
 
   // Generation of random coordinates and cluster position
   while (!cluster) {
@@ -374,6 +403,7 @@ async function genVehicleParams() {
             lat: random_lat,
             lng: random_lng,
             model: name,
+            temperature: temperature,
             date_creation: date_creation_vehicle,
             cluster: thisCluster,
             parameters: param_array
@@ -399,9 +429,10 @@ function createVehicles(cb) {
             vehicle_prop.lat,
             vehicle_prop.lng,
             vehicle_prop.model,
+            vehicle_prop.temperature,
             vehicle_prop.cluster,
             vehicle_prop.parameters,
-            batteries[0],
+            batteries[Math.floor(Math.random()*(12))],
             vehicle_prop.date_creation,
             paths[0]
           );

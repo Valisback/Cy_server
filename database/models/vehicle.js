@@ -21,6 +21,10 @@ const VehicleModelSchema = new Schema({
     model: {type: String,
         required: true 
     },
+    temperature: {type: Number,
+        min: 0,
+        max: 100,
+    },
     cluster: {type: Schema.Types.ObjectId,
         ref: 'Cluster',
         required: true
