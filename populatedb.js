@@ -46,7 +46,7 @@ function pathCreate(time, start_lat, start_lng, end_lat, end_lng, cb) {
       cb(err, null);
       return;
     }
-    console.log("New Path: " + path);
+    //console.log("New Path: " + path);
     paths.push(path);
     cb(null, path);
   });
@@ -64,10 +64,10 @@ function parameterCreate(time, performance, battery_charge, cost_value, cb) {
   parameter.save(function(err) {
     if (err) {
       //cb(err, null)
-      console.log("error " + err);
+      //console.log("error " + err);
       return;
     }
-    console.log("New Parameter: " + parameter);
+    //console.log("New Parameter: " + parameter);
     parameters.push(parameter);
   });
 }
@@ -89,7 +89,7 @@ function clusterCreate(name, center_lat, center_lng, radius, gen_health, cb) {
       console.log(err);
       return;
     }
-    console.log("New Cluster: " + cluster);
+    //console.log("New Cluster: " + cluster);
     clusters.push(cluster);
     //cb(null, cluster)
   });
@@ -110,7 +110,7 @@ function batteryCreate(name, charge, life_span, status, date_of_creation, cb) {
       cb(err, null);
       return;
     }
-    console.log("New Battery: " + battery);
+    //console.log("New Battery: " + battery);
     batteries.push(battery);
     cb(null, battery);
   });
@@ -150,7 +150,7 @@ function vehicleCreate(
       console.log(err);
       return;
     }
-    console.log("New Vehicle: " + vehicle);
+    //console.log("New Vehicle: " + vehicle);
     vehicles.push(vehicle);
     //cb(null, vehicle)
   });
@@ -191,7 +191,11 @@ async function createParams(date_creation, random_vehicle_index, vehicle_id, cb)
     date  = new Date(d);
     table = [-1, 1];
     selector = Math.round(Math.random());
-    performance = -Math.pow(month / 12, 1.7 ) + 100 + table[selector] * month * (Math.random()*(0.2));
+    let newperformance = -Math.pow(month / 12, 1.7 ) + 100 + table[selector] * month * (Math.random()*(0.2));
+    while(newperformance>100){
+      newperformance = newperformance - Math.random()*(0.1)*month;
+    }
+    performance = newperformance.toPrecision(3);
     month ++;
     if (battery_charge < 8) {
       battery_charge = battery_charge + Math.random() * 90;
@@ -215,7 +219,7 @@ async function createParams(date_creation, random_vehicle_index, vehicle_id, cb)
           if (err) {
             return console.log(err);
           } else {
-            console.log("Inserted in collection: " + docs);
+            //console.log("Inserted in collection: " + docs);
             return docs;
           }
         });
@@ -247,18 +251,19 @@ function createClusters(cb) {
               state_boundaries[element].max_lng) /
             2;
           cluster_name = state_boundaries[element].name;
-          cluster_radius = getDistanceFromLatLonInKm(
+          cluster_radius = 500000;/*getDistanceFromLatLonInKm(
             state_boundaries[element].max_lat,
             state_boundaries[element].max_lng,
             cluster_center_lat,
             cluster_center_lng
-          );
+          );*/
+
           clusterCreate(
             cluster_name,
             cluster_center_lat,
             cluster_center_lng,
             cluster_radius,
-            90
+            Math.random()*50+45,
           );
         }
         callback();
@@ -369,7 +374,7 @@ async function genVehicleParams() {
   random_vehicle_index = Math.floor(random_vehicle_index);
   let chosen_model = vehicle_list[random_vehicle_index];
   let cluster;
-  const start = new Date(2016, 01, 01);
+  const start = new Date(2012, 01, 01);
   const end = new Date(2019, 09, 01);
   const date_creation_vehicle = randomDate(start, end);
 

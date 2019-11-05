@@ -30,7 +30,6 @@ exports.param_of_vehicle_and_date = function(req, res, next) {
   end_month = start_month + 1;
   start = new Date(start_year, start_month);
   var end = new Date(start_year, end_month);
-  console.log("start:", start, "end: ", end);
     Parameter.find({$and:[{vehicle: req.params.vehicle_id},{time: {$gte: start, $lt: end}}]})
     .exec(function (err, parameter_match) {
         if (err) { return next(err); }
