@@ -2,6 +2,23 @@ const {Parameter, Vehicle} = require('../database/models');
 
 const async = require('async');
 
+// Display last parameter of all vehicle
+exports.all_last_parameter = function(req, res, next) {
+  var start = new Date(req.params.date);
+  start_year = start.getFullYear();
+  start_month = start.getMonth();
+  end_month = start_month + 1;
+  start = new Date(start_year, start_month);
+  var end = new Date(start_year, end_month);
+    Parameter.find({time: {$gte: start, $lt: end}})
+    .populate('vehicle')
+    .exec(function (err, parameter_match) {
+        if (err) { return next(err); }
+        //Successful, so render
+        res.json({ title: 'Parameters', parameters: parameter_match });
+      });
+};
+
 // Display details for one parameter.
 exports.parameter_detail = function(req, res, next) {
     Parameter.find({_id: req.params.id})
