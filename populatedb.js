@@ -72,14 +72,14 @@ function parameterCreate(time, performance, battery_charge, cost_value, cb) {
   });
 }
 
-function clusterCreate(name, center_lat, center_lng, radius, gen_health, cb) {
+function clusterCreate(name, center_lat, center_lng, radius, gen_health, tco_savings,  cb) {
   clusterDetail = {
     name: name,
     center_lat: center_lat,
     center_lng: center_lng,
     radius: radius,
     gen_health,
-    gen_health
+    tco_savings
   };
   var cluster = new Cluster(clusterDetail);
 
@@ -182,20 +182,33 @@ async function createParams(date_creation, random_vehicle_index, vehicle_id, cb)
   random_vehicle_index = Math.floor(random_vehicle_index);
   let today = new Date();
   let now = new Date(today.setMonth(today.getMonth()+1));
+  let projection = new Date(today.setFullYear(today.getFullYear()+2));
   let performance = 100;
+  let newperformance = 99.8  ;
   let battery_charge = 100;
   let params = [];
   let month = 0;
+  let coef = Math.random();
   let cost_value = price_list[random_vehicle_index];
-  for (var d = new Date(date_creation); d <= now; d.setMonth(d.getMonth() + 1)) {
+  for (var d = new Date(date_creation); d <= projection; d.setMonth(d.getMonth() + 1)) {
     date  = new Date(d);
-    table = [-1, 1];
+    table = [0, 1];
+    maxtab  = [50, 100]
     selector = Math.round(Math.random());
-    let newperformance = -Math.pow(month / 12, 1.7 ) + 100 + table[selector] * month * (Math.random()*(0.2));
-    while(newperformance>100){
-      newperformance = newperformance - Math.random()*(0.1)*month;
-    }
-    performance = newperformance.toPrecision(3);
+    let baseline_value = -Math.pow(month / 12, 1.7 ) + 100;
+    let baseline_value_max = -Math.pow(month / 12, 1.4 ) + 100;
+    let baseline_value_min = -Math.pow(month / 12, 1.95) + 100;
+    //newperformance = baseline_value + table[selector] * ((100 - baseline_value)/10)*(month/12 ) - table[1-selector] * (baseline_value/10)*(month/12 );
+    let newperformance = coef*(baseline_value_max - baseline_value_min) + baseline_value_min;
+    // while(newperformance > performance){
+    //   //console.log(newperformance);
+    //   newperformance = Math.random()*(baseline_value_max - baseline_value_min) + baseline_value_max;
+    // }
+    // // //   other_selector = Math.round(Math.random());
+
+    // newperformance = newperformance - Math.random()*(0.2) * month/12;
+    // }
+    performance = newperformance.toFixed(3);
     month ++;
     if (battery_charge < 8) {
       battery_charge = battery_charge + Math.random() * 90;
@@ -251,12 +264,19 @@ function createClusters(cb) {
               state_boundaries[element].max_lng) /
             2;
           cluster_name = state_boundaries[element].name;
+          clust_size = getDistanceFromLatLonInKm(
+            state_boundaries[element].max_lat,
+            state_boundaries[element].max_lng,
+            cluster_center_lat,
+            cluster_center_lng
+          );
           cluster_radius = 500000;/*getDistanceFromLatLonInKm(
             state_boundaries[element].max_lat,
             state_boundaries[element].max_lng,
             cluster_center_lat,
             cluster_center_lng
           );*/
+          tco_savings = Math.random() * (clust_size - 100000) + 100000;
 
           clusterCreate(
             cluster_name,
@@ -264,6 +284,7 @@ function createClusters(cb) {
             cluster_center_lng,
             cluster_radius,
             Math.random()*50+45,
+            tco_savings
           );
         }
         callback();
@@ -375,7 +396,7 @@ async function genVehicleParams() {
   let chosen_model = vehicle_list[random_vehicle_index];
   let cluster;
   const start = new Date(2012, 01, 01);
-  const end = new Date(2019, 09, 01);
+  const end = new Date();
   const date_creation_vehicle = randomDate(start, end);
 
   let param_array = [];

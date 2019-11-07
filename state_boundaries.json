@@ -31,13 +31,13 @@
       "min_lng": -106.6168,
       "max_lng": -93.5074
     },
-    "WA":
+    "WY":
     {
-      "name": "Washington",
-      "min_lat": 45.5439,
-      "max_lat": 49.0027,
-      "min_lng": -124.8679,
-      "max_lng": -116.9165
+      "name": "Wyoming",
+      "min_lat": 40.9986,
+      "max_lat": 44.9998,
+      "min_lng": -111.0539,
+      "max_lng": -104.0556
     }
 
   }

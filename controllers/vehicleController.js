@@ -3,6 +3,7 @@ const {Vehicle, Parameter} = require('../database/models');
 // Display list of all vehicles.
 exports.vehicle_list = function(req, res, next) {
     Vehicle.find({})
+    .populate({path: 'parameters', options: {limit: 1}})
     .populate('cluster')
     .populate('_battery_id')
     .populate('_path_id')

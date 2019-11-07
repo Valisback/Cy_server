@@ -25,6 +25,9 @@ var ClusterModelSchema = new Schema({
         max: 100,
         required: true
     },
+    tco_savings: {type: Number,
+        required: true
+    },
     
 })
 
