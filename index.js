@@ -5,6 +5,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const database = mongoose.connection;
 const app = express();
+//Importing Routes
+const postsRoute = require('./routes/posts');
+const vehiclesRoute = require('./routes/vehicles');
+const pathsRoute = require('./routes/paths');
+const batteriesRoute = require('./routes/batteries');
+const clustersRoute = require('./routes/clusters');
+const parametersRoute = require('./routes/parameters');
 
 // Load in the mongoose models
 const { Post, Vehicle, Battery, Path } = require('./database/models');
@@ -19,13 +26,7 @@ app.use(function(req, res, next) {
     next();
   });
 
-//Importing Routes
-const postsRoute = require('./routes/posts');
-const vehiclesRoute = require('./routes/vehicles');
-const pathsRoute = require('./routes/paths');
-const batteriesRoute = require('./routes/batteries');
-const clustersRoute = require('./routes/clusters');
-const parametersRoute = require('./routes/parameters');
+
 
 
 app.get('/', function(_, res) {
